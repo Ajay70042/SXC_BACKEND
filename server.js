@@ -36,6 +36,27 @@ app.post('/attendance/:type', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
+app.post('/tts', async (req, res) => {
+  const { text, apiKey } = req.body;
+  try {
+    const response = await axios.post(
+      'https://api.elevenlabs.io/v1/text-to-speech/KXLIqYnR31PxzZ5CtmT9',
+      {
+        text: text,
+        model_id: 'eleven_multilingual_v2',
+        voice_settings: { stability: 0.5, similarity_boost: 0.8, style: 0.4, use_speaker_boost: true }
+      },
+      {
+        headers: { 'xi-api-key': apiKey, 'Content-Type': 'application/json' },
+        responseType: 'arraybuffer'
+      }
+    );
+    res.set('Content-Type', 'audio/mpeg');
+    res.set('Access-Control-Allow-Origin', '*');
+    res.send(Buffer.from(response.data));
+  } catch(err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log('SXC backend running on port', PORT));
