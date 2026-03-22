@@ -60,6 +60,6 @@ app.post('/tts', async (req, res) => {
     console.error('ElevenLabs error:', err.response?.status, err.response?.data?.toString());
     res.status(500).json({ error: err.message, status: err.response?.status });
   }
-});;
+});
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log('SXC backend running on port', PORT));
