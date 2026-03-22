@@ -38,6 +38,8 @@ app.post('/attendance/:type', async (req, res) => {
 });
 app.post('/tts', async (req, res) => {
   const { text, apiKey } = req.body;
+  console.log('TTS request received, text length:', text?.length, 'hasKey:', !!apiKey);
+  if(!text || !apiKey) return res.status(400).json({ error: 'Missing text or apiKey' });
   try {
     const response = await axios.post(
       'https://api.elevenlabs.io/v1/text-to-speech/KXLIqYnR31PxzZ5CtmT9',
@@ -55,8 +57,9 @@ app.post('/tts', async (req, res) => {
     res.set('Access-Control-Allow-Origin', '*');
     res.send(Buffer.from(response.data));
   } catch(err) {
-    res.status(500).json({ error: err.message });
+    console.error('ElevenLabs error:', err.response?.status, err.response?.data?.toString());
+    res.status(500).json({ error: err.message, status: err.response?.status });
   }
-});
+});;
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log('SXC backend running on port', PORT));
